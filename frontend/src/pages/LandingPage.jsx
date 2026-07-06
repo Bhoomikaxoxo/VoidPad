@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Beams from '../components/Beams';
 import ScrambleText from '../components/ScrambleText';
-import { ArrowRight, Loader2, Info } from 'lucide-react';
+import { ArrowRight, Loader2, Info, Eye, EyeOff } from 'lucide-react';
 import axios from 'axios';
 
 // Configurable API root
@@ -13,6 +13,7 @@ export default function LandingPage({ onAccessVault, initialError }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(initialError || '');
   const [serverStatus, setServerStatus] = useState('checking'); // checking, ready, waking_up
+  const [showPassword, setShowPassword] = useState(false);
 
   // Ping backend to detect cold starts
   useEffect(() => {
@@ -93,13 +94,21 @@ export default function LandingPage({ onAccessVault, initialError }) {
           <form onSubmit={handleSubmit} className="w-full space-y-4">
             <div className="relative group">
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 placeholder="Enter key to open or create vault..."
                 value={key}
                 onChange={(e) => setKey(e.target.value)}
                 disabled={loading}
-                className="w-full bg-black/60 backdrop-blur-md border border-violet-900/60 rounded-lg pl-4 pr-12 py-3 text-slate-100 font-mono text-center text-xs md:text-sm placeholder-slate-600 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all duration-300 shadow-[0_0_15px_rgba(106,90,205,0.05)] focus:shadow-[0_0_20px_rgba(106,90,205,0.15)]"
+                className="w-full bg-black/60 backdrop-blur-md border border-violet-900/60 rounded-lg pl-4 pr-20 py-3 text-slate-100 font-mono text-center text-xs md:text-sm placeholder-slate-600 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all duration-300 shadow-[0_0_15px_rgba(106,90,205,0.05)] focus:shadow-[0_0_20px_rgba(106,90,205,0.15)]"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-11 top-2.5 p-1 text-slate-500 hover:text-slate-300 transition-colors"
+                aria-label={showPassword ? "Hide key" : "Show key"}
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
               <button
                 type="submit"
                 disabled={loading}
