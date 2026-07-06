@@ -7,6 +7,9 @@ Void Vault is a loginless, keyless, and ephemeral secure scratchpad and file vau
 ## ✨ Features
 
 - **Key-Based Access**: Access or create vaults instantly via a single unique key. No email, no passwords, and no accounts required.
+- **Password Visibility Toggle**: Features a custom eye button inside the landing page key input to toggle between hidden and plain-text visibility.
+- **In-App Quick Look Preview**: Preview **PDFs, images, and Microsoft Word (.docx)** files directly inside a glassmorphic overlay modal on the site. Supports standard browser PDF tools and full text-copying from Word documents.
+- **Performance-Optimized Code Splitting**: Utilizes dynamic ES module imports to code-split the 170KB `.docx` rendering library, downloading it only when a user clicks the Preview button.
 - **Auto-Saving Notepad**: Features a debounced notepad that autosaves notes to the vault with visual save indicators.
 - **GSAP Scramble Effects**: Elegant landing page header scrambles and notepad placeholder animations built using GreenSock's `ScrambleTextPlugin`.
 - **Arbitrary File Uploads**: Accept any file extension/type up to **5MB per file**, with a total vault capacity of **25MB**.
@@ -22,6 +25,7 @@ Void Vault is a loginless, keyless, and ephemeral secure scratchpad and file vau
 - **Framework**: Vite + React
 - **Styling**: Tailwind CSS
 - **Animations**: GSAP (GreenSock) + `ScrambleTextPlugin`
+- **Word Document Parser**: `docx-preview`
 - **Icons**: Lucide React
 
 ### Backend
