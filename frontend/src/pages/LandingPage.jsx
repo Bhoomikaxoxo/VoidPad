@@ -98,7 +98,7 @@ export default function LandingPage({ onAccessVault, initialError }) {
                 value={key}
                 onChange={(e) => setKey(e.target.value)}
                 disabled={loading}
-                className="w-full bg-black/60 backdrop-blur-md border border-violet-900/60 rounded-lg px-4 py-3 text-slate-100 font-mono text-center text-lg placeholder-slate-600 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all duration-300 shadow-[0_0_15px_rgba(106,90,205,0.05)] focus:shadow-[0_0_20px_rgba(106,90,205,0.15)]"
+                className="w-full bg-black/60 backdrop-blur-md border border-violet-900/60 rounded-lg pl-4 pr-12 py-3 text-slate-100 font-mono text-center text-xs md:text-sm placeholder-slate-600 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all duration-300 shadow-[0_0_15px_rgba(106,90,205,0.05)] focus:shadow-[0_0_20px_rgba(106,90,205,0.15)]"
               />
               <button
                 type="submit"
