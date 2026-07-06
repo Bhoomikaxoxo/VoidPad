@@ -1,0 +1,29 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Vault {
+  id           String      @id @default(cuid())
+  keyHash      String      @unique
+  content      String      @default("")
+  createdAt    DateTime    @default(now())
+  expiresAt    DateTime
+  files        VaultFile[]
+}
+
+model VaultFile {
+  id            String   @id @default(cuid())
+  vaultId       String
+  vault         Vault    @relation(fields: [vaultId], references: [id], onDelete: Cascade)
+  cloudinaryId  String
+  url           String
+  mimeType      String
+  sizeBytes     Int
+  originalName  String
+  createdAt     DateTime @default(now())
+}
