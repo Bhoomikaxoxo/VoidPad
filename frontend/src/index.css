@@ -3,27 +3,13 @@
 @import "tailwindcss/utilities";
 
 
-@font-face {
-  font-display: block;
-  font-family: 'Space Mono';
-  font-style: normal;
-  font-weight: 400;
-  src: url('https://fonts.gstatic.com/s/spacemono/v13/i7dPIFZifjKcF5UAWdDRUEZ2RFq7AwU.woff2') format('woff2');
-}
-
-@font-face {
-  font-display: block;
-  font-family: 'Space Mono';
-  font-style: normal;
-  font-weight: 600;
-  src: url('https://fonts.gstatic.com/s/spacemono/v13/i7dPIFZifjKcF5UAWdDRUEZ2RFq7AwU.woff2') format('woff2');
-}
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
 
 body {
   margin: 0;
   background-color: #030305;
   color: #e2e8f0;
-  font-family: 'Space Mono', monospace;
+  font-family: 'Outfit', sans-serif;
   overflow-x: hidden;
 }
 

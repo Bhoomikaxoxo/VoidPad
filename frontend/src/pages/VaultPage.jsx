@@ -323,7 +323,7 @@ export default function VaultPage({ vaultKey, initialVault, onExit }) {
   });
 
   return (
-    <div className="relative min-h-screen w-screen overflow-x-hidden bg-[#030305] text-slate-200 flex flex-col font-mono">
+    <div className="relative min-h-screen w-screen overflow-x-hidden bg-[#030305] text-slate-200 flex flex-col">
       {/* 1. Animated Beams Background */}
       <div style={{ position: 'fixed', inset: 0, zIndex: 0 }}>
         <Beams
