@@ -352,7 +352,7 @@ router.get('/api/vault/:id/export', async (req, res) => {
 
     // Set headers for PDF download
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="voidpad-export-${id}.pdf"`);
+    res.setHeader('Content-Disposition', 'attachment; filename="void-vault-snapshot.pdf"');
 
     // Generate and stream PDF
     generateVaultPDF(vault, res);
