@@ -23,7 +23,7 @@ export default function ScrambleText({ onComplete }) {
         duration: 2
       })
       .to('#scramble-text-3', {
-        scrambleText: { text: ' 24 hours,', chars: '0123456789' },
+        scrambleText: { text: '24 hours,', chars: '0123456789' },
         duration: 2
       })
       .to('#scramble-text-4', {
@@ -31,7 +31,7 @@ export default function ScrambleText({ onComplete }) {
         duration: 1
       })
       .to('#scramble-text-5', {
-        scrambleText: { text: ' forever.', chars: 'lowerCase', speed: 0.3 },
+        scrambleText: { text: 'forever.', chars: 'lowerCase', speed: 0.3 },
         duration: 1.5
       });
 
@@ -49,9 +49,9 @@ export default function ScrambleText({ onComplete }) {
       
       {/* Subtitle Line */}
       <p className="text-scramble__subtitle text-slate-400 font-medium select-none" style={{ fontSize: 'max(1.05rem, min(2.2vw + 0.2rem, 1.3rem))', lineHeight: 1.5 }} aria-hidden="true">
-        <span id="scramble-text-2" className="text-gray-400 font-normal"></span>
-        <span id="scramble-text-3" className="text-yellow-500 font-semibold"></span>
-        <span id="scramble-text-4" className="text-red-500 font-bold tracking-wider"></span>
+        <span id="scramble-text-2" className="text-gray-400 font-normal"></span>{" "}
+        <span id="scramble-text-3" className="text-yellow-500 font-semibold"></span>{" "}
+        <span id="scramble-text-4" className="text-red-500 font-bold tracking-wider"></span>{" "}
         <span id="scramble-text-5" className="text-violet-300"></span>
       </p>
     </div>
