@@ -642,7 +642,7 @@ export default function VaultPage({ vaultKey, initialVault, onExit }) {
                 <div className="w-full h-full bg-[#121214] overflow-auto p-4 md:p-8 flex justify-center">
                   <div 
                     ref={docxContainerRef} 
-                    className="bg-white shadow-xl p-8 md:p-12 max-w-[800px] w-full min-h-full border border-slate-200 text-black docx-render-wrapper rounded"
+                    className="max-w-[800px] w-full docx-render-wrapper"
                   />
                 </div>
               ) : (

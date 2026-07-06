@@ -113,8 +113,9 @@ body {
 
 /* Word Document (.docx) previewer styling overrides */
 .docx-render-wrapper {
-  background-color: #ffffff !important;
+  background-color: transparent !important;
   color: #1a1a1a !important;
+  width: 100% !important;
 }
 
 .docx-render-wrapper * {
@@ -122,9 +123,21 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
 }
 
-/* Force standard text tags inside docx container to have dark color and white background */
-.docx-render-wrapper section,
-.docx-render-wrapper article,
+/* Style the generated page sections as white sheets of paper */
+.docx-render-wrapper section.docx,
+.docx-render-wrapper .docx-preview {
+  background-color: #ffffff !important;
+  color: #1a1a1a !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2) !important;
+  margin-bottom: 2rem !important;
+  padding: 3rem !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 800px !important;
+  display: block !important;
+}
+
+/* Force standard text tags inside docx container to have dark color and inherit background */
 .docx-render-wrapper div,
 .docx-render-wrapper p,
 .docx-render-wrapper span,
@@ -142,8 +155,4 @@ body {
 .docx-render-wrapper li {
   background-color: transparent !important;
   color: #1a1a1a !important;
-}
-
-.docx-render-wrapper section.docx {
-  background-color: #ffffff !important;
 }
