@@ -72,7 +72,7 @@ export default function VaultPage({ vaultKey, initialVault, onExit }) {
           const docx = await import('docx-preview');
           docxContainerRef.current.innerHTML = '';
           
-          await docx.renderAsync(blob, docxContainerRef.current, {
+          await docx.renderAsync(blob, docxContainerRef.current, null, {
             inWrapper: false,
             ignoreWidth: true,
             ignoreHeight: true,
