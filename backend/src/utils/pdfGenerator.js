@@ -69,13 +69,11 @@ export function generateVaultPDF(vault, res) {
   doc.restore();
 
   // --- HEADER TITLE ---
-  doc.moveDown(3.8);
+  doc.moveDown(4.2);
   doc.fontSize(14).font('Courier-Bold').fillColor('#a78bfa').text('VOID VAULT SNAPSHOT', { align: 'center', characterSpacing: 1 });
-  doc.moveDown(0.2);
-  doc.fontSize(8).font('Courier').fillColor('#6d28d9').text('EPHEMERAL SECURITY SYSTEM', { align: 'center', characterSpacing: 2 });
   
   // Divider
-  doc.moveDown(0.8);
+  doc.moveDown(1.2);
   doc.lineWidth(1).strokeColor('#1e1b4b').moveTo(50, doc.y).lineTo(545, doc.y).stroke();
   doc.moveDown(1.2);
 
