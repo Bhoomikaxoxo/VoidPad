@@ -43,7 +43,7 @@ export default function ScrambleText({ onComplete }) {
   return (
     <div className="text-scramble__content flex flex-col items-center gap-3">
       {/* Title Line */}
-      <h1 className="font-bold text-violet-400 select-none" style={{ fontSize: 'max(2.4rem, min(6vw + 0.5rem, 3.4rem))', lineHeight: 1.2 }}>
+      <h1 className="font-bold text-amber-500 select-none" style={{ fontSize: 'max(2.4rem, min(6vw + 0.5rem, 3.4rem))', lineHeight: 1.2 }}>
         <span id="scramble-text-1"></span>
       </h1>
       
@@ -52,7 +52,7 @@ export default function ScrambleText({ onComplete }) {
         <span id="scramble-text-2" className="text-gray-400 font-normal"></span>{" "}
         <span id="scramble-text-3" className="text-yellow-500 font-semibold"></span>{" "}
         <span id="scramble-text-4" className="text-red-500 font-bold tracking-wider"></span>{" "}
-        <span id="scramble-text-5" className="text-violet-300"></span>
+        <span id="scramble-text-5" className="text-amber-300"></span>
       </p>
     </div>
   );

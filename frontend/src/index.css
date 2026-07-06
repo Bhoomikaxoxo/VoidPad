@@ -64,12 +64,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e1e2f;
+  background: #2a2215;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #31314d;
+  background: #47371d;
 }
 
 /* Notes Textarea and Placeholder styles */
@@ -83,11 +83,11 @@ body {
 .notes-textarea {
   width: 100%;
   min-height: 320px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(223, 220, 255, 0.15);
+  background: #0d0d12;
+  border: 1px solid #1c1d22;
   border-radius: 8px;
   padding: 1.25rem;
-  color: #dfdcff;
+  color: #f3f4f6;
   font-family: 'Space Mono', monospace;
   font-size: 1rem;
   line-height: 1.5;
@@ -97,8 +97,8 @@ body {
 }
 
 .notes-textarea:focus {
-  border-color: rgba(106, 90, 205, 0.5);
-  box-shadow: 0 0 15px rgba(106, 90, 205, 0.15);
+  border-color: rgba(245, 158, 11, 0.4);
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.08);
 }
 
 .notes-placeholder-wrapper {
@@ -108,7 +108,7 @@ body {
   pointer-events: none;
   font-family: 'Space Mono', monospace;
   font-size: 1rem;
-  color: rgba(223, 220, 255, 0.5);
+  color: rgba(156, 163, 175, 0.4);
 }
 
 /* Word Document (.docx) previewer styling overrides */

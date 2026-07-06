@@ -330,7 +330,7 @@ export default function VaultPage({ vaultKey, initialVault, onExit }) {
           beamWidth={2}
           beamHeight={15}
           beamNumber={8}
-          lightColor="#6a5acd"
+          lightColor="#d97706"
           speed={1.2}
           noiseIntensity={1.2}
           scale={0.2}
@@ -339,11 +339,11 @@ export default function VaultPage({ vaultKey, initialVault, onExit }) {
       </div>
 
       {/* 2. Top Bar */}
-      <header className="relative z-50 sticky top-0 border-b border-violet-950/40 bg-black/40 backdrop-blur-md px-4 md:px-8 py-3.5 flex items-center justify-between">
+      <header className="relative z-50 sticky top-0 border-b border-slate-900 bg-[#0d0d12] px-4 md:px-8 py-3.5 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
             onClick={onExit}
-            className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-200 transition-colors border border-slate-800/80 rounded px-2.5 py-1.5 bg-slate-950/60"
+            className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-200 transition-colors border border-slate-800 rounded px-2.5 py-1.5 bg-[#0e0e13]"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             <span>Leave</span>
@@ -352,8 +352,8 @@ export default function VaultPage({ vaultKey, initialVault, onExit }) {
           <div className="h-4 w-px bg-slate-800"></div>
 
           {/* Expiration Countdown Info */}
-          <div className="flex items-center gap-2 text-xs text-violet-300 font-semibold select-none font-mono">
-            <Clock className="h-3.5 w-3.5 text-violet-400 animate-pulse" />
+          <div className="flex items-center gap-2 text-xs text-amber-400 font-semibold select-none font-mono">
+            <Clock className="h-3.5 w-3.5 text-amber-500 animate-pulse" />
             <span>
               expires at {formattedExpiry} ({timeLeft || 'calculating...'})
             </span>
@@ -364,7 +364,7 @@ export default function VaultPage({ vaultKey, initialVault, onExit }) {
           {/* Share button */}
           <button
             onClick={copyShareLink}
-            className="flex items-center gap-1.5 text-xs border border-violet-900/40 text-violet-300 hover:border-violet-600 hover:bg-violet-950/20 rounded px-3 py-1.5 bg-violet-950/10 transition-all duration-300 font-mono"
+            className="flex items-center gap-1.5 text-xs border border-slate-800 text-slate-300 hover:border-amber-600/50 hover:bg-amber-950/20 rounded px-3 py-1.5 bg-[#0e0e13] transition-all duration-300 font-mono"
           >
             {copiedLink ? (
               <>
@@ -384,7 +384,7 @@ export default function VaultPage({ vaultKey, initialVault, onExit }) {
             href={`${API_URL}/api/vault/${vault.id}/export`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 text-xs bg-violet-600/90 hover:bg-violet-500 border border-violet-500/30 text-white font-semibold rounded px-3.5 py-1.5 shadow-md shadow-violet-900/10 hover:shadow-violet-500/20 transition-all duration-300 font-mono"
+            className="flex items-center gap-1.5 text-xs bg-amber-600 hover:bg-amber-500 border border-amber-500/30 text-black font-semibold rounded px-3.5 py-1.5 shadow-md transition-all duration-300 font-mono"
           >
             <Download className="h-3.5 w-3.5" />
             <span className="font-mono">Export as PDF</span>
@@ -403,8 +403,8 @@ export default function VaultPage({ vaultKey, initialVault, onExit }) {
         </div>
 
         {/* Option to insert file as well block */}
-        <section className="bg-slate-950/40 border border-slate-900/80 rounded-xl p-5 backdrop-blur-sm shadow-xl space-y-4 font-mono">
-          <div className="text-xs text-violet-400 font-mono tracking-wider uppercase select-none font-semibold">
+        <section className="bg-[#0d0d12] border border-slate-900 rounded-xl p-5 shadow-xl space-y-4 font-mono">
+          <div className="text-xs text-amber-500 font-mono tracking-wider uppercase select-none font-semibold">
             Option to insert file as well
           </div>
 
@@ -414,13 +414,13 @@ export default function VaultPage({ vaultKey, initialVault, onExit }) {
             onDragEnter={handleDragEnter}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
-            className={`relative flex flex-col items-center justify-center border border-dashed rounded-lg p-8 bg-slate-950/60 transition-all duration-300 ${
+            className={`relative flex flex-col items-center justify-center border border-dashed rounded-lg p-8 bg-[#09090c] transition-all duration-300 ${
               isDragging
-                ? 'border-violet-500 bg-violet-950/20 shadow-[0_0_15px_rgba(106,90,205,0.15)]'
-                : 'border-violet-950/30 hover:border-violet-800/40 hover:bg-slate-950/90'
+                ? 'border-amber-500 bg-amber-950/10 shadow-[0_0_15px_rgba(245,158,11,0.02)]'
+                : 'border-slate-800 hover:border-amber-600/40 hover:bg-slate-950/40'
             }`}
           >
-            <Upload className={`h-8 w-8 transition-colors mb-2 ${isDragging ? 'text-violet-400' : 'text-slate-500'}`} />
+            <Upload className={`h-8 w-8 transition-colors mb-2 ${isDragging ? 'text-amber-400' : 'text-slate-500'}`} />
             <span className="text-xs text-slate-300 font-semibold mb-1 font-mono">
               Drag and drop file here
             </span>
@@ -428,7 +428,7 @@ export default function VaultPage({ vaultKey, initialVault, onExit }) {
               Any file extension accepted • Max 5MB per file
             </span>
             
-            <label className="cursor-pointer px-3 py-1.5 bg-violet-900/40 border border-violet-700/50 hover:bg-violet-800/40 text-violet-300 text-[11px] rounded transition-all font-mono">
+            <label className="cursor-pointer px-3 py-1.5 bg-amber-900/20 border border-amber-700/40 hover:bg-amber-800/30 text-amber-300 text-[11px] rounded transition-all font-mono">
               Select File
               <input
                 type="file"
@@ -441,7 +441,7 @@ export default function VaultPage({ vaultKey, initialVault, onExit }) {
 
           {/* Uploading progress/indicator */}
           {uploading && (
-            <div className="flex items-center justify-center gap-2 text-xs text-violet-400 bg-violet-950/10 border border-violet-900/30 rounded py-2 animate-pulse font-mono">
+            <div className="flex items-center justify-center gap-2 text-xs text-amber-400 bg-amber-950/10 border border-amber-900/20 rounded py-2 animate-pulse font-mono">
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
               <span>Uploading to secure vault...</span>
             </div>
@@ -465,7 +465,7 @@ export default function VaultPage({ vaultKey, initialVault, onExit }) {
             </div>
             <div className="h-1 w-full bg-slate-950 rounded-full overflow-hidden border border-slate-900">
               <div
-                className="h-full bg-violet-600 transition-all duration-500"
+                className="h-full bg-amber-600 transition-all duration-500"
                 style={{ width: `${usedPercentage}%` }}
               />
             </div>
@@ -481,10 +481,10 @@ export default function VaultPage({ vaultKey, initialVault, onExit }) {
                 {files.map((file) => (
                   <div
                     key={file.id}
-                    className="flex items-center justify-between p-2.5 border border-slate-900 rounded bg-black/40 hover:border-slate-800 transition-all font-mono"
+                    className="flex items-center justify-between p-2.5 border border-slate-900 rounded bg-[#09090c] hover:border-slate-800 transition-all font-mono"
                   >
                     <div className="flex items-center gap-2.5 min-w-0 pr-2">
-                      <File className="h-4 w-4 text-violet-400/80 shrink-0" />
+                      <File className="h-4 w-4 text-amber-500/80 shrink-0" />
                       <div className="min-w-0">
                         <p className="text-xs text-slate-300 font-medium truncate font-mono" title={file.originalName}>
                           {file.originalName}
@@ -498,7 +498,7 @@ export default function VaultPage({ vaultKey, initialVault, onExit }) {
                       {(file.mimeType === 'application/pdf' || file.mimeType.startsWith('image/') || file.mimeType.includes('wordprocessingml') || file.originalName.endsWith('.docx')) && (
                         <button
                           onClick={() => setPreviewFile(file)}
-                          className="p-1.5 hover:bg-slate-900 rounded text-slate-400 hover:text-violet-400 transition-colors"
+                          className="p-1.5 hover:bg-slate-900 rounded text-slate-400 hover:text-amber-400 transition-colors"
                           title="Preview File"
                         >
                           <Eye className="h-3.5 w-3.5" />
@@ -556,8 +556,8 @@ export default function VaultPage({ vaultKey, initialVault, onExit }) {
 
       {/* Custom Confirmation Modal */}
       {deleteConfirmFile && (
-        <div className="fixed inset-0 z-[100] bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#09090f] border border-red-950/50 rounded-xl max-w-sm w-full p-6 shadow-2xl shadow-red-950/20 font-mono relative overflow-hidden">
+        <div className="fixed inset-0 z-[100] bg-black/85 flex items-center justify-center p-4">
+          <div className="bg-[#0d0d12] border border-red-950/50 rounded-xl max-w-sm w-full p-6 shadow-2xl shadow-red-950/20 font-mono relative overflow-hidden">
             {/* Red outline accent */}
             <div className="absolute top-0 inset-x-0 h-1 bg-red-600"></div>
             
@@ -567,7 +567,7 @@ export default function VaultPage({ vaultKey, initialVault, onExit }) {
             </div>
 
             <p className="text-xs text-slate-300 leading-relaxed mb-6 font-mono">
-              Are you sure you want to permanently delete <span className="text-violet-300 font-semibold">"{deleteConfirmFile.originalName}"</span> from this ephemeral vault? This action is irreversible.
+              Are you sure you want to permanently delete <span className="text-amber-400 font-semibold">"{deleteConfirmFile.originalName}"</span> from this ephemeral vault? This action is irreversible.
             </p>
 
             <div className="flex justify-end gap-3 font-mono">
@@ -593,15 +593,15 @@ export default function VaultPage({ vaultKey, initialVault, onExit }) {
       )}
       {/* Quick Look Preview Modal */}
       {previewFile && (
-        <div className="fixed inset-0 z-[100] bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-[#09090f] border border-violet-950/40 rounded-xl max-w-4xl w-full p-5 shadow-2xl shadow-violet-950/20 font-mono relative overflow-hidden flex flex-col h-[85vh]">
-            {/* Violet outline accent */}
-            <div className="absolute top-0 inset-x-0 h-1 bg-violet-600"></div>
+        <div className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4">
+          <div className="bg-[#0d0d12] border border-slate-900 rounded-xl max-w-4xl w-full p-5 shadow-2xl font-mono relative overflow-hidden flex flex-col h-[85vh]">
+            {/* Amber outline accent */}
+            <div className="absolute top-0 inset-x-0 h-1 bg-amber-600"></div>
             
             {/* Header */}
             <div className="flex items-center justify-between mb-4 border-b border-slate-900 pb-3 select-none">
               <div className="flex items-center gap-2.5 min-w-0 pr-4">
-                <File className="h-4 w-4 text-violet-400" />
+                <File className="h-4 w-4 text-amber-500" />
                 <div className="min-w-0">
                   <h3 className="text-xs font-bold text-slate-200 truncate font-mono">
                     {previewFile.originalName}
