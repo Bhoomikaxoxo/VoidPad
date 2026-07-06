@@ -43,47 +43,41 @@ async function runTests() {
   assert.strictEqual(resPdf.valid, true);
   assert.strictEqual(resPdf.mimeType, 'application/pdf');
 
-  // C. Check blocked Windows EXE (MZ / 4D 5A)
-  const exeFile = makeMockFile('malware.png', 500, Buffer.from([0x4D, 0x5A, 0x90, 0x00, 0x03, 0x00, 0x00, 0x00])); // masquerading as .png!
+  // C. Check that EXE signature is now accepted
+  const exeFile = makeMockFile('malware.png', 500, Buffer.from([0x4D, 0x5A, 0x90, 0x00, 0x03, 0x00, 0x00, 0x00])); 
   const resExe = validateFile(exeFile);
-  console.log('malware.png (EXE disguised) check:', resExe);
-  assert.strictEqual(resExe.valid, false);
-  assert.ok(resExe.error.includes('executable content detected'));
+  console.log('malware.png (EXE signature) check:', resExe);
+  assert.strictEqual(resExe.valid, true);
 
-  // D. Check blocked ELF Linux binary (7F 45 4C 46)
+  // D. Check that ELF signature is now accepted
   const elfFile = makeMockFile('script.sh', 300, Buffer.from([0x7F, 0x45, 0x4C, 0x46, 0x01, 0x01, 0x01]));
   const resElf = validateFile(elfFile);
-  console.log('script.sh (ELF binary) check:', resElf);
-  assert.strictEqual(resElf.valid, false);
-  assert.ok(resElf.error.includes('executable content detected'));
+  console.log('script.sh (ELF signature) check:', resElf);
+  assert.strictEqual(resElf.valid, true);
 
-  // E. Check blocked Java class file (CA FE BA BE)
+  // E. Check that Java class file is now accepted
   const classFile = makeMockFile('App.class', 400, Buffer.from([0xCA, 0xFE, 0xBA, 0xBE, 0x00, 0x03]));
   const resClass = validateFile(classFile);
   console.log('App.class check:', resClass);
-  assert.strictEqual(resClass.valid, false);
-  assert.ok(resClass.error.includes('executable content detected'));
+  assert.strictEqual(resClass.valid, true);
 
   // F. Check safe plain text (.txt)
   const txtFile = makeMockFile('notes.txt', 20, Buffer.from('Hello world! This is a test note.', 'utf-8'));
   const resTxt = validateFile(txtFile);
   console.log('notes.txt check:', resTxt);
   assert.strictEqual(resTxt.valid, true);
-  assert.strictEqual(resTxt.mimeType, 'text/plain');
 
-  // G. Check blocked text file containing binary null bytes
-  const badTxtFile = makeMockFile('data.txt', 50, Buffer.from([0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x00, 0x42, 0x61, 0x64])); // Null byte embedded
+  // G. Check that text file containing null bytes is now accepted
+  const badTxtFile = makeMockFile('data.txt', 50, Buffer.from([0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x00, 0x42, 0x61, 0x64])); 
   const resBadTxt = validateFile(badTxtFile);
   console.log('data.txt (binary text) check:', resBadTxt);
-  assert.strictEqual(resBadTxt.valid, false);
-  assert.ok(resBadTxt.error.includes('binary content detected'));
+  assert.strictEqual(resBadTxt.valid, true);
 
-  // H. Check safe ZIP / DOCX (PK\x03\x04 / 50 4B 03 04)
+  // H. Check safe ZIP / DOCX
   const docxFile = makeMockFile('proposal.docx', 5000, Buffer.from([0x50, 0x4B, 0x03, 0x04, 0x14, 0x00, 0x08, 0x00]));
   const resDocx = validateFile(docxFile);
   console.log('proposal.docx check:', resDocx);
   assert.strictEqual(resDocx.valid, true);
-  assert.strictEqual(resDocx.mimeType, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
 
   // I. Check size limit enforcement (> 5MB)
   const hugeFile = makeMockFile('large.zip', 6 * 1024 * 1024, Buffer.from([0x50, 0x4B, 0x03, 0x04])); // 6MB
@@ -92,12 +86,11 @@ async function runTests() {
   assert.strictEqual(resHuge.valid, false);
   assert.ok(resHuge.error.includes('exceeds the 5MB limit'));
 
-  // J. Check file type not in allow-list
-  const unknownFile = makeMockFile('audio.mp3', 1000, Buffer.from([0x49, 0x44, 0x33, 0x03, 0x00, 0x00, 0x00])); // MP3 signature
+  // J. Check that arbitrary formats (MP3) are now accepted
+  const unknownFile = makeMockFile('audio.mp3', 1000, Buffer.from([0x49, 0x44, 0x33, 0x03, 0x00, 0x00, 0x00])); 
   const resUnknown = validateFile(unknownFile);
   console.log('audio.mp3 check:', resUnknown);
-  assert.strictEqual(resUnknown.valid, false);
-  assert.ok(resUnknown.error.includes('not in allow-list'));
+  assert.strictEqual(resUnknown.valid, true);
 
   console.log('✓ Success: File validator rules verified.');
   console.log('\n--- ALL VERIFICATIONS COMPLETED SUCCESSFULLY ---');

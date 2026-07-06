@@ -36,8 +36,21 @@ function matchesSignature(buffer, signature) {
   return true;
 }
 
+const EXT_TO_MIME = {
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.gif': 'image/gif',
+  '.webp': 'image/webp',
+  '.pdf': 'application/pdf',
+  '.txt': 'text/plain',
+  '.csv': 'text/csv',
+  '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  '.zip': 'application/zip',
+};
+
 /**
- * Validates a file's size and contents using magic byte analysis.
+ * Validates a file's size and contents.
  *
  * @param {Object} file - The file object from Multer (in-memory storage)
  * @returns {{ valid: boolean, error?: string, mimeType?: string }}
@@ -52,65 +65,8 @@ export function validateFile(file) {
     return { valid: false, error: 'File size exceeds the 5MB limit.' };
   }
 
-  const buffer = file.buffer;
+  // Allow all extensions and MIME types, looking up extension-based mime first
   const ext = path.extname(file.originalname).toLowerCase();
-
-  // 2. Scan for blocked executable signatures (independent of extension)
-  for (const [key, sig] of Object.entries(FORBIDDEN_SIGNATURES)) {
-    if (matchesSignature(buffer, sig)) {
-      return { valid: false, error: `Upload rejected: executable content detected (sig: ${key}).` };
-    }
-  }
-
-  // 3. Scan for allowed signatures
-  // WebP has a slightly more complex signature (RIFF .... WEBP)
-  const isWebP = buffer.length >= 12 &&
-    buffer.toString('ascii', 0, 4) === 'RIFF' &&
-    buffer.toString('ascii', 8, 12) === 'WEBP';
-
-  if (isWebP) {
-    return { valid: true, mimeType: 'image/webp' };
-  }
-
-  if (matchesSignature(buffer, ALLOWED_SIGNATURES.png)) {
-    return { valid: true, mimeType: 'image/png' };
-  }
-
-  if (matchesSignature(buffer, ALLOWED_SIGNATURES.jpg)) {
-    return { valid: true, mimeType: 'image/jpeg' };
-  }
-
-  if (matchesSignature(buffer, ALLOWED_SIGNATURES.gif)) {
-    return { valid: true, mimeType: 'image/gif' };
-  }
-
-  if (matchesSignature(buffer, ALLOWED_SIGNATURES.pdf)) {
-    return { valid: true, mimeType: 'application/pdf' };
-  }
-
-  if (matchesSignature(buffer, ALLOWED_SIGNATURES.zipOrDocx)) {
-    // Both zip and docx start with PK\x03\x04
-    // We can differentiate based on the extension or let it pass as either zip or docx
-    if (ext === '.docx') {
-      return { valid: true, mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' };
-    }
-    return { valid: true, mimeType: 'application/zip' };
-  }
-
-  // 4. Handle text-based files (.txt, .csv)
-  // These files do not have a binary magic byte header.
-  // We check that the extension is txt/csv and the buffer does not contain null bytes (binary indicator).
-  if (ext === '.txt' || ext === '.csv') {
-    // Scan buffer for null bytes (0x00) which would indicate binary content
-    const checkLen = Math.min(buffer.length, 4096);
-    for (let i = 0; i < checkLen; i++) {
-      if (buffer[i] === 0x00) {
-        return { valid: false, error: 'Upload rejected: binary content detected in text file.' };
-      }
-    }
-    const mimeType = ext === '.csv' ? 'text/csv' : 'text/plain';
-    return { valid: true, mimeType };
-  }
-
-  return { valid: false, error: 'Upload rejected: file type not in allow-list.' };
+  const mimeType = EXT_TO_MIME[ext] || file.mimetype || 'application/octet-stream';
+  return { valid: true, mimeType };
 }

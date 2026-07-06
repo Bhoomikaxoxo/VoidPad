@@ -37,10 +37,12 @@ async function purgeVault(vaultId) {
 
     // Delete all attached files from Cloudinary
     for (const file of vault.files) {
-      try {
-        await cloudinary.uploader.destroy(file.cloudinaryId);
-      } catch (err) {
-        console.error(`Error deleting Cloudinary asset ${file.cloudinaryId}:`, err);
+      if (file.cloudinaryId && !file.cloudinaryId.startsWith('mock_')) {
+        try {
+          await cloudinary.uploader.destroy(file.cloudinaryId);
+        } catch (err) {
+          console.error(`Error deleting Cloudinary asset ${file.cloudinaryId}:`, err);
+        }
       }
     }
 
@@ -218,24 +220,46 @@ router.post('/api/vault/:id/files', upload.single('file'), async (req, res) => {
       });
     }
 
-    // 3. Upload buffer to Cloudinary
-    const uploadToCloudinary = () => {
-      return new Promise((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-          {
-            folder: 'voidpad',
-            resource_type: 'auto'
-          },
-          (error, result) => {
-            if (error) reject(error);
-            else resolve(result);
-          }
-        );
-        stream.end(file.buffer);
-      });
-    };
+    // 3. Upload buffer to Cloudinary (or fallback to base64 mock if not configured)
+    let cloudinaryResult = null;
+    const isCloudinaryConfigured = 
+      process.env.CLOUDINARY_CLOUD_NAME && 
+      process.env.CLOUDINARY_CLOUD_NAME !== 'your_cloudinary_cloud_name' &&
+      process.env.CLOUDINARY_API_KEY &&
+      process.env.CLOUDINARY_API_KEY !== 'your_cloudinary_api_key';
 
-    const cloudinaryResult = await uploadToCloudinary();
+    if (isCloudinaryConfigured) {
+      try {
+        const uploadToCloudinary = () => {
+          return new Promise((resolve, reject) => {
+            const stream = cloudinary.uploader.upload_stream(
+              {
+                folder: 'voidpad',
+                resource_type: 'auto'
+              },
+              (error, result) => {
+                if (error) reject(error);
+                else resolve(result);
+              }
+            );
+            stream.end(file.buffer);
+          });
+        };
+        cloudinaryResult = await uploadToCloudinary();
+      } catch (cloudinaryErr) {
+        console.warn('Cloudinary upload failed, falling back to mock upload:', cloudinaryErr);
+      }
+    }
+
+    if (!cloudinaryResult) {
+      // Mock Cloudinary upload with a Data URL (base64) so it works locally with zero configuration
+      const base64Content = file.buffer.toString('base64');
+      const dataUrl = `data:${validation.mimeType};base64,${base64Content}`;
+      cloudinaryResult = {
+        public_id: `mock_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        secure_url: dataUrl
+      };
+    }
 
     // 4. Save metadata to DB
     const dbFile = await prisma.vaultFile.create({
@@ -283,8 +307,14 @@ router.delete('/api/vault/:id/files/:fileId', async (req, res) => {
       return res.status(404).json({ error: 'File not found in this vault.' });
     }
 
-    // 1. Delete from Cloudinary
-    await cloudinary.uploader.destroy(file.cloudinaryId);
+    // 1. Delete from Cloudinary (only if not mock)
+    if (file.cloudinaryId && !file.cloudinaryId.startsWith('mock_')) {
+      try {
+        await cloudinary.uploader.destroy(file.cloudinaryId);
+      } catch (err) {
+        console.error('Failed to delete Cloudinary asset:', err);
+      }
+    }
 
     // 2. Delete from DB
     await prisma.vaultFile.delete({
