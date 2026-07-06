@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Download, Upload, Trash2, Clock, File, AlertTriangle, ArrowLeft, Copy, Check, Loader2 } from 'lucide-react';
+import { Download, Upload, Trash2, Clock, File, AlertTriangle, ArrowLeft, Copy, Check, Loader2, Eye, X } from 'lucide-react';
 import axios from 'axios';
 import Beams from '../components/Beams';
 import { gsap } from 'gsap';
@@ -22,6 +22,74 @@ export default function VaultPage({ vaultKey, initialVault, onExit }) {
   const [copiedLink, setCopiedLink] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [deleteConfirmFile, setDeleteConfirmFile] = useState(null);
+  const [previewFile, setPreviewFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState('');
+
+  // Dynamic preview Blob URL generation for base64 local fallback URLs
+  useEffect(() => {
+    if (previewFile) {
+      let url = previewFile.url;
+      if (url.startsWith('data:')) {
+        try {
+          const parts = url.split(';base64,');
+          const contentType = parts[0].split(':')[1];
+          const raw = window.atob(parts[1]);
+          const rawLength = raw.length;
+          const uInt8Array = new Uint8Array(rawLength);
+          for (let i = 0; i < rawLength; ++i) {
+            uInt8Array[i] = raw.charCodeAt(i);
+          }
+          const blob = new Blob([uInt8Array], { type: contentType });
+          url = URL.createObjectURL(blob);
+        } catch (e) {
+          console.error('Failed to parse base64 for preview URL:', e);
+        }
+      }
+      setPreviewUrl(url);
+      return () => {
+        if (url && url.startsWith('blob:')) {
+          URL.revokeObjectURL(url);
+        }
+      };
+    } else {
+      setPreviewUrl('');
+    }
+  }, [previewFile]);
+
+  const docxContainerRef = useRef(null);
+
+  // Client-side docx parser & renderer
+  useEffect(() => {
+    const isDocx = previewFile?.mimeType?.includes('wordprocessingml') || previewFile?.originalName?.endsWith('.docx');
+    if (isDocx && previewUrl && docxContainerRef.current) {
+      const renderDocx = async () => {
+        try {
+          docxContainerRef.current.innerHTML = '<div class="flex items-center justify-center p-8 text-xs text-slate-500 font-mono">Parsing Word document layout...</div>';
+          
+          const response = await fetch(previewUrl);
+          const blob = await response.blob();
+          
+          const docx = await import('docx-preview');
+          docxContainerRef.current.innerHTML = '';
+          
+          await docx.renderAsync(blob, docxContainerRef.current, {
+            inWrapper: false,
+            ignoreWidth: true,
+            ignoreHeight: true,
+            ignoreFonts: false,
+            breakPages: true,
+            experimental: true
+          });
+        } catch (err) {
+          console.error("Error rendering docx:", err);
+          if (docxContainerRef.current) {
+            docxContainerRef.current.innerHTML = `<div class="p-4 text-red-500 font-mono text-xs text-center">Failed to render Word document preview: ${err.message}</div>`;
+          }
+        }
+      };
+      renderDocx();
+    }
+  }, [previewFile, previewUrl]);
 
   // Driven by initial state content
   const [showPlaceholder, setShowPlaceholder] = useState(
@@ -426,7 +494,16 @@ export default function VaultPage({ vaultKey, initialVault, onExit }) {
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-1.5">
+                     <div className="flex items-center gap-1.5">
+                      {(file.mimeType === 'application/pdf' || file.mimeType.startsWith('image/') || file.mimeType.includes('wordprocessingml') || file.originalName.endsWith('.docx')) && (
+                        <button
+                          onClick={() => setPreviewFile(file)}
+                          className="p-1.5 hover:bg-slate-900 rounded text-slate-400 hover:text-violet-400 transition-colors"
+                          title="Preview File"
+                        >
+                          <Eye className="h-3.5 w-3.5" />
+                        </button>
+                      )}
                       <button
                         onClick={() => handleDownload(file)}
                         className="p-1.5 hover:bg-slate-900 rounded text-slate-400 hover:text-slate-200 transition-colors"
@@ -510,6 +587,73 @@ export default function VaultPage({ vaultKey, initialVault, onExit }) {
               >
                 Confirm Delete
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Quick Look Preview Modal */}
+      {previewFile && (
+        <div className="fixed inset-0 z-[100] bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-[#09090f] border border-violet-950/40 rounded-xl max-w-4xl w-full p-5 shadow-2xl shadow-violet-950/20 font-mono relative overflow-hidden flex flex-col h-[85vh]">
+            {/* Violet outline accent */}
+            <div className="absolute top-0 inset-x-0 h-1 bg-violet-600"></div>
+            
+            {/* Header */}
+            <div className="flex items-center justify-between mb-4 border-b border-slate-900 pb-3 select-none">
+              <div className="flex items-center gap-2.5 min-w-0 pr-4">
+                <File className="h-4 w-4 text-violet-400" />
+                <div className="min-w-0">
+                  <h3 className="text-xs font-bold text-slate-200 truncate font-mono">
+                    {previewFile.originalName}
+                  </h3>
+                  <p className="text-[9px] text-slate-500 font-mono mt-0.5">
+                    {previewFile.mimeType === 'application/pdf' 
+                      ? 'PDF Document' 
+                      : (previewFile.mimeType.includes('wordprocessingml') || previewFile.originalName.endsWith('.docx'))
+                      ? 'Word Document'
+                      : 'Image Asset'}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setPreviewFile(null)}
+                className="p-1.5 hover:bg-slate-900 rounded-md text-slate-400 hover:text-slate-200 transition-colors"
+                aria-label="Close Preview"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="flex-1 bg-black/40 rounded-lg overflow-hidden border border-slate-900 relative">
+              {previewFile.mimeType === 'application/pdf' ? (
+                previewUrl ? (
+                  <iframe
+                    src={previewUrl}
+                    className="w-full h-full bg-slate-950"
+                    title={previewFile.originalName}
+                  />
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center text-xs text-slate-500">
+                    Preparing PDF document...
+                  </div>
+                )
+              ) : (previewFile.mimeType.includes('wordprocessingml') || previewFile.originalName.endsWith('.docx')) ? (
+                <div className="w-full h-full bg-[#121214] overflow-auto p-4 md:p-8 flex justify-center">
+                  <div 
+                    ref={docxContainerRef} 
+                    className="bg-white shadow-xl p-8 md:p-12 max-w-[800px] w-full min-h-full border border-slate-200 text-black docx-render-wrapper rounded"
+                  />
+                </div>
+              ) : (
+                <div className="w-full h-full flex items-center justify-center overflow-auto p-4">
+                  <img
+                    src={previewFile.url}
+                    alt={previewFile.originalName}
+                    className="max-w-full max-h-full object-contain rounded"
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
