@@ -1,0 +1,6 @@
+# Allow crawlers on landing page while protecting ephemeral vault routes
+User-agent: *
+Allow: /
+Disallow: /v/
+
+Sitemap: https://voidvault.vercel.app/sitemap.xml

@@ -3,11 +3,54 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Void Pad — A keyless, loginless scratch space with plain-text note autosaving, file uploads, and a hard 24-hour lifespan." />
-    <title>Void Pad — Ephemeral Vaults</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    
+    <!-- Primary SEO Meta Tags -->
+    <title>Void Vault — Ephemeral 24-Hour Keyless Scratchpad & Secure File Vault</title>
+    <meta name="title" content="Void Vault — Ephemeral 24-Hour Keyless Scratchpad & Secure File Vault" />
+    <meta name="description" content="Void Vault is a loginless, keyless, and ephemeral scratchpad & file storage. Create secure vaults instantly with a custom key. All notes and files are permanently shredded after 24 hours." />
+    <meta name="keywords" content="ephemeral scratchpad, keyless vault, temporary notes, 24 hour file sharing, secure notes, loginless pad, temporary file storage, void vault" />
+    <meta name="author" content="Void Vault" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#030305" />
+
+    <!-- Open Graph / Facebook / WhatsApp Meta Tags -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://voidvault.vercel.app/" />
+    <meta property="og:title" content="Void Vault — Ephemeral 24-Hour Keyless Scratchpad" />
+    <meta property="og:description" content="Loginless, keyless, and temporary secure scratchpad. All notes and files are automatically shredded after 24 hours. No history, no recovery." />
+    <meta property="og:image" content="/og-image.png" />
+    <meta property="og:site_name" content="Void Vault" />
+
+    <!-- Twitter / X Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://voidvault.vercel.app/" />
+    <meta name="twitter:title" content="Void Vault — Ephemeral 24-Hour Keyless Scratchpad" />
+    <meta name="twitter:description" content="Loginless, keyless, and temporary secure scratchpad. All notes and files are automatically shredded after 24 hours." />
+    <meta name="twitter:image" content="/og-image.png" />
+
+    <!-- Canonical Link -->
+    <link rel="canonical" href="https://voidvault.vercel.app/" />
+
+    <!-- Structured JSON-LD Data for Google Search Rich Snippets -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Void Vault",
+        "url": "https://voidvault.vercel.app/",
+        "description": "An ephemeral, keyless, and loginless 24-hour scratchpad and file vault with auto-shredding security.",
+        "applicationCategory": "ProductivityApplication",
+        "operatingSystem": "All",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      }
+    </script>
   </head>
-  <body>
+  <body class="bg-black text-slate-100">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
