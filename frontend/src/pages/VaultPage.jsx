@@ -388,8 +388,8 @@ export default function VaultPage({ vaultKey, initialVault, onExit }) {
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
             className={`relative flex flex-col items-center justify-center border border-dashed rounded-lg p-8 bg-slate-950/60 transition-all duration-300 ${isDragging
-                ? 'border-violet-500 bg-violet-950/20 shadow-[0_0_15px_rgba(106,90,205,0.15)]'
-                : 'border-violet-950/30 hover:border-violet-800/40 hover:bg-slate-950/90'
+              ? 'border-violet-500 bg-violet-950/20 shadow-[0_0_15px_rgba(106,90,205,0.15)]'
+              : 'border-violet-950/30 hover:border-violet-800/40 hover:bg-slate-950/90'
               }`}
           >
             <Upload className={`h-8 w-8 transition-colors mb-2 ${isDragging ? 'text-violet-400' : 'text-slate-500'}`} />
