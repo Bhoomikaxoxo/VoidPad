@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Beams from '../components/Beams';
 import ScrambleText from '../components/ScrambleText';
 import { ArrowRight, Loader2, Info, Eye, EyeOff } from 'lucide-react';
@@ -14,6 +14,21 @@ export default function LandingPage({ onAccessVault, initialError }) {
   const [error, setError] = useState(initialError || '');
   const [serverStatus, setServerStatus] = useState('checking'); // checking, ready, waking_up
   const [showPassword, setShowPassword] = useState(false);
+  const skipRef = useRef(null); // holds the skip function exposed by ScrambleText
+  const inputRef = useRef(null);
+  const [isTyping, setIsTyping] = useState(false);
+  const typingTimerRef = useRef(null);
+
+  const handleReveal = useCallback(() => {
+    setShowInput(true);
+    // Auto-focus input after transition
+    setTimeout(() => inputRef.current?.focus(), 100);
+  }, []);
+
+  // Click anywhere to skip the scramble animation
+  const handlePageClick = useCallback(() => {
+    if (skipRef.current) skipRef.current();
+  }, []);
 
   // Ping backend to detect cold starts
   useEffect(() => {
@@ -63,7 +78,10 @@ export default function LandingPage({ onAccessVault, initialError }) {
   };
 
   return (
-    <div className="relative min-h-screen w-screen overflow-hidden bg-black text-slate-200">
+    <div
+      className="relative min-h-screen w-screen overflow-hidden bg-black text-slate-200"
+      onClick={handlePageClick}
+    >
       {/* 1. Animated Beams Background */}
       <div style={{ position: 'fixed', inset: 0, zIndex: 0 }}>
         <Beams
@@ -80,9 +98,9 @@ export default function LandingPage({ onAccessVault, initialError }) {
 
       {/* 2. Centered Scramble Text & Form Overlay */}
       <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6">
-        {/* Scramble Text plays automatically once */}
-        <div className="mb-10 pointer-events-none select-none">
-          <ScrambleText onComplete={() => setShowInput(true)} />
+        {/* Scramble Text plays automatically once; click anywhere to skip */}
+        <div className="mb-10 select-none">
+          <ScrambleText onComplete={handleReveal} skipRef={skipRef} isTyping={isTyping} />
         </div>
 
         {/* Input Form Reveal */}
@@ -90,13 +108,19 @@ export default function LandingPage({ onAccessVault, initialError }) {
           className={`flex flex-col items-center w-full max-w-md transition-all duration-1000 ${showInput ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4 pointer-events-none'
             }`}
         >
-          <form onSubmit={handleSubmit} className="w-full space-y-4">
+          <form onSubmit={handleSubmit} className="w-full space-y-4" onClick={(e) => e.stopPropagation()}>
             <div className="relative group">
               <input
+                ref={inputRef}
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Enter key to open or create vault..."
                 value={key}
-                onChange={(e) => setKey(e.target.value)}
+                onChange={(e) => {
+                  setKey(e.target.value);
+                  setIsTyping(true);
+                  clearTimeout(typingTimerRef.current);
+                  typingTimerRef.current = setTimeout(() => setIsTyping(false), 600);
+                }}
                 disabled={loading}
                 className="w-full bg-black/60 backdrop-blur-md border border-violet-900/60 rounded-lg pl-4 pr-20 py-3 text-slate-100 font-mono text-center text-xs md:text-sm placeholder-slate-600 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all duration-300 shadow-[0_0_15px_rgba(106,90,205,0.05)] focus:shadow-[0_0_20px_rgba(106,90,205,0.15)]"
               />

@@ -1,17 +1,40 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
 
 // Register the ScrambleTextPlugin with GSAP
 gsap.registerPlugin(ScrambleTextPlugin);
 
-export default function ScrambleText({ onComplete }) {
+// Final text values for each span
+const FINAL_TEXTS = [
+  { id: 'scramble-text-1', text: 'Void Vault.' },
+  { id: 'scramble-text-2', text: 'No accounts, no history.' },
+  { id: 'scramble-text-3', text: '24 hours,' },
+  { id: 'scramble-text-4', text: 'GONE' },
+  { id: 'scramble-text-5', text: 'forever.' },
+];
+
+// Character pools per span (matches original animation flavour)
+const CHAR_POOLS = [
+  'abcdefghijklmnopqrstuvwxyz',   // Void Vault. — lowercase
+  'XxOo',                          // No accounts — XO style
+  '0123456789',                    // 24 hours — digits
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZ',   // GONE — uppercase
+  'abcdefghijklmnopqrstuvwxyz',   // forever. — lowercase
+];
+
+export default function ScrambleText({ onComplete, skipRef, isTyping }) {
+  const tlRef = useRef(null);
+  const completedRef = useRef(false);
+
   useEffect(() => {
-    // 5-span scramble animation timeline matching the requested specs
     const tl = gsap.timeline({
       id: 'void-vault-intro',
       defaults: { ease: 'none' },
-      onComplete: onComplete
+      onComplete: () => {
+        completedRef.current = true;
+        onComplete?.();
+      }
     });
 
     tl.to('#scramble-text-1', {
@@ -35,10 +58,65 @@ export default function ScrambleText({ onComplete }) {
         duration: 1.5
       });
 
+    tlRef.current = tl;
+
+    // Expose skip function to parent via ref
+    if (skipRef) {
+      skipRef.current = () => {
+        if (completedRef.current) return; // already done
+        completedRef.current = true;
+        tl.kill();
+        // Instantly set all spans to their final text
+        FINAL_TEXTS.forEach(({ id, text }) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = text;
+        });
+        onComplete?.();
+      };
+    }
+
     return () => {
       tl.kill();
     };
-  }, [onComplete]);
+  }, [onComplete, skipRef]);
+
+  // --- Typing scramble effect ---
+  // When the user types, randomly scramble ~30% of chars every 80ms
+  useEffect(() => {
+    if (!isTyping) {
+      // Restore final text when typing stops
+      FINAL_TEXTS.forEach(({ id, text }) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+      });
+      return;
+    }
+
+    const interval = setInterval(() => {
+      FINAL_TEXTS.forEach(({ id, text }, i) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const pool = CHAR_POOLS[i];
+        el.textContent = text
+          .split('')
+          .map(char =>
+            char === ' ' || char === '.' || char === ',' || Math.random() > 0.3
+              ? char
+              : pool[Math.floor(Math.random() * pool.length)]
+          )
+          .join('');
+      });
+    }, 80);
+
+    return () => {
+      clearInterval(interval);
+      // Snap back to final text on cleanup
+      FINAL_TEXTS.forEach(({ id, text }) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+      });
+    };
+  }, [isTyping]);
 
   return (
     <div className="text-scramble__content flex flex-col items-center gap-3">
