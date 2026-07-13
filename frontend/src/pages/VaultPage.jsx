@@ -13,10 +13,10 @@ const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'ht
 const TOTAL_STORAGE_CAP_BYTES = 25 * 1024 * 1024; // 25MB
 
 export default function VaultPage({ vaultKey, initialVault, onExit }) {
-  const vault = initialVault;
-  const [content, setContent] = useState(initialVault.content || '');
+  const vault = initialVault || {};
+  const [content, setContent] = useState(vault.content || '');
   const [saveStatus, setSaveStatus] = useState('Saved to Void');
-  const [files, setFiles] = useState(initialVault.files || []);
+  const [files, setFiles] = useState(vault.files || []);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState('');
   const [copiedLink, setCopiedLink] = useState(false);
@@ -28,7 +28,7 @@ export default function VaultPage({ vaultKey, initialVault, onExit }) {
   // Dynamic preview Blob URL generation for base64 local fallback URLs
   useEffect(() => {
     if (previewFile) {
-      let url = previewFile.url;
+      let url = previewFile.url || '';
       if (url.startsWith('data:')) {
         try {
           const parts = url.split(';base64,');
@@ -93,7 +93,7 @@ export default function VaultPage({ vaultKey, initialVault, onExit }) {
 
   // Driven by initial state content
   const [showPlaceholder, setShowPlaceholder] = useState(
-    !initialVault.content || initialVault.content.trim().length === 0
+    !vault.content || typeof vault.content !== 'string' || vault.content.trim().length === 0
   );
 
   const isFirstRender = useRef(true);
