@@ -12,7 +12,6 @@ export default function LandingPage({ onAccessVault, initialError }) {
   const [key, setKey] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(initialError || '');
-  const [serverStatus, setServerStatus] = useState('checking'); // checking, ready, waking_up
   const [showPassword, setShowPassword] = useState(false);
   const skipRef = useRef(null); // holds the skip function exposed by ScrambleText
   const inputRef = useRef(null);
@@ -28,29 +27,6 @@ export default function LandingPage({ onAccessVault, initialError }) {
   // Click anywhere to skip the scramble animation
   const handlePageClick = useCallback(() => {
     if (skipRef.current) skipRef.current();
-  }, []);
-
-  // Ping backend to detect cold starts
-  useEffect(() => {
-    let active = true;
-    const checkServer = async () => {
-      try {
-        const res = await axios.get(`${API_URL}/api/status`, { timeout: 4000 });
-        if (res.data.status === 'ready' && active) {
-          setServerStatus('ready');
-        }
-      } catch (err) {
-        if (active) {
-          setServerStatus('waking_up');
-          // Retry check after 4 seconds
-          setTimeout(checkServer, 4000);
-        }
-      }
-    };
-    checkServer();
-    return () => {
-      active = false;
-    };
   }, []);
 
   const handleSubmit = async (e) => {
@@ -70,7 +46,7 @@ export default function LandingPage({ onAccessVault, initialError }) {
       if (err.response && err.response.data && err.response.data.error) {
         setError(err.response.data.error);
       } else {
-        setError('Could not connect to backend server. It may still be waking up.');
+        setError('Unable to connect to backend server. Please verify your connection or ensure backend is running.');
       }
     } finally {
       setLoading(false);
@@ -161,14 +137,6 @@ export default function LandingPage({ onAccessVault, initialError }) {
           </form>
         </div>
       </div>
-
-      {/* Waking up badge */}
-      {serverStatus === 'waking_up' && (
-        <div className="absolute bottom-4 left-4 right-4 md:left-auto md:right-4 z-20 flex items-center justify-center gap-2 font-mono text-xs text-violet-300 bg-slate-950/80 border border-violet-900/40 rounded-full px-4 py-2 shadow-lg">
-          <Loader2 className="h-3 w-3 animate-spin text-violet-500" />
-          <span>Waking up vault server (Render cold-start delay)...</span>
-        </div>
-      )}
     </div>
   );
 }
