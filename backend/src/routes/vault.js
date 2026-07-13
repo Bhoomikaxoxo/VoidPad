@@ -138,7 +138,7 @@ router.post('/api/vault/access', accessLimiter, async (req, res) => {
     });
   } catch (err) {
     console.error('Error in /api/vault/access:', err);
-    return res.status(500).json({ error: 'Internal server error.' });
+    return res.status(500).json({ error: err.message || 'Internal server error.' });
   }
 });
 

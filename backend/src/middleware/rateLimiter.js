@@ -54,17 +54,19 @@ export function limitVaultCreation(ip) {
   return true;
 }
 
-// Periodically clean up the memory tracker to avoid leak-like growth
-setInterval(() => {
-  const now = Date.now();
-  const oneHourAgo = now - 60 * 60 * 1000;
+// Clean up memory tracker periodically if running as long-lived server
+if (typeof process !== 'undefined' && !process.env.VERCEL) {
+  setInterval(() => {
+    const now = Date.now();
+    const oneHourAgo = now - 60 * 60 * 1000;
 
-  for (const [ip, timestamps] of creationTracker.entries()) {
-    const active = timestamps.filter(t => t > oneHourAgo);
-    if (active.length === 0) {
-      creationTracker.delete(ip);
-    } else {
-      creationTracker.set(ip, active);
+    for (const [ip, timestamps] of creationTracker.entries()) {
+      const active = timestamps.filter(t => t > oneHourAgo);
+      if (active.length === 0) {
+        creationTracker.delete(ip);
+      } else {
+        creationTracker.set(ip, active);
+      }
     }
-  }
-}, 30 * 60 * 1000); // Run every 30 minutes
+  }, 30 * 60 * 1000);
+}
