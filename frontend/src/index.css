@@ -3,13 +3,27 @@
 @import "tailwindcss/utilities";
 
 
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+@font-face {
+  font-display: block;
+  font-family: 'Space Mono';
+  font-style: normal;
+  font-weight: 400;
+  src: url('https://fonts.gstatic.com/s/spacemono/v13/i7dPIFZifjKcF5UAWdDRUEZ2RFq7AwU.woff2') format('woff2');
+}
+
+@font-face {
+  font-display: block;
+  font-family: 'Space Mono';
+  font-style: normal;
+  font-weight: 600;
+  src: url('https://fonts.gstatic.com/s/spacemono/v13/i7dPIFZifjKcF5UAWdDRUEZ2RFq7AwU.woff2') format('woff2');
+}
 
 body {
   margin: 0;
   background-color: #030305;
   color: #e2e8f0;
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Space Mono', monospace;
   overflow-x: hidden;
 }
 
@@ -50,12 +64,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2a2215;
+  background: #1e1e2f;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #47371d;
+  background: #31314d;
 }
 
 /* Notes Textarea and Placeholder styles */
@@ -69,11 +83,11 @@ body {
 .notes-textarea {
   width: 100%;
   min-height: 320px;
-  background: #0d0d12;
-  border: 1px solid #1c1d22;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(223, 220, 255, 0.15);
   border-radius: 8px;
   padding: 1.25rem;
-  color: #f3f4f6;
+  color: #dfdcff;
   font-family: 'Space Mono', monospace;
   font-size: 1rem;
   line-height: 1.5;
@@ -83,8 +97,8 @@ body {
 }
 
 .notes-textarea:focus {
-  border-color: rgba(245, 158, 11, 0.4);
-  box-shadow: 0 0 15px rgba(245, 158, 11, 0.08);
+  border-color: rgba(106, 90, 205, 0.5);
+  box-shadow: 0 0 15px rgba(106, 90, 205, 0.15);
 }
 
 .notes-placeholder-wrapper {
@@ -94,7 +108,7 @@ body {
   pointer-events: none;
   font-family: 'Space Mono', monospace;
   font-size: 1rem;
-  color: rgba(156, 163, 175, 0.4);
+  color: rgba(223, 220, 255, 0.5);
 }
 
 /* Word Document (.docx) previewer styling overrides */

@@ -3,11 +3,29 @@
   "private": true,
   "version": "1.0.0",
   "description": "Root workspace workspace for Void Pad",
+  "type": "module",
   "scripts": {
     "install:all": "npm install --prefix backend && npm install --prefix frontend --legacy-peer-deps",
     "dev:backend": "npm run dev --prefix backend",
     "dev:frontend": "npm run dev --prefix frontend",
     "build:frontend": "npm run build --prefix frontend",
-    "build": "npm run build --prefix frontend"
+    "build": "npx prisma generate --schema=backend/prisma/schema.prisma && npm run build --prefix frontend",
+    "postinstall": "npx prisma generate --schema=backend/prisma/schema.prisma"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.12.1",
+    "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.2.0",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "pdfkit": "^0.15.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "prisma": "^5.12.1"
   }
 }

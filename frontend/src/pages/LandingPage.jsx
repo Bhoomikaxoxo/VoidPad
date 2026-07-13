@@ -70,7 +70,7 @@ export default function LandingPage({ onAccessVault, initialError }) {
           beamWidth={2}
           beamHeight={15}
           beamNumber={8}
-          lightColor="#d97706"
+          lightColor="#6a5acd"
           speed={1.2}
           noiseIntensity={1.2}
           scale={0.2}
@@ -87,9 +87,8 @@ export default function LandingPage({ onAccessVault, initialError }) {
 
         {/* Input Form Reveal */}
         <div
-          className={`flex flex-col items-center w-full max-w-md transition-all duration-1000 ${
-            showInput ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4 pointer-events-none'
-          }`}
+          className={`flex flex-col items-center w-full max-w-md transition-all duration-1000 ${showInput ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4 pointer-events-none'
+            }`}
         >
           <form onSubmit={handleSubmit} className="w-full space-y-4">
             <div className="relative group">
@@ -99,7 +98,7 @@ export default function LandingPage({ onAccessVault, initialError }) {
                 value={key}
                 onChange={(e) => setKey(e.target.value)}
                 disabled={loading}
-                className="w-full bg-[#0d0d12] border border-slate-800 rounded-lg pl-4 pr-20 py-3 text-slate-100 font-mono text-center text-xs md:text-sm placeholder-slate-600 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all duration-300 shadow-[0_0_15px_rgba(245,158,11,0.02)] focus:shadow-[0_0_20px_rgba(245,158,11,0.08)]"
+                className="w-full bg-black/60 backdrop-blur-md border border-violet-900/60 rounded-lg pl-4 pr-20 py-3 text-slate-100 font-mono text-center text-xs md:text-sm placeholder-slate-600 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all duration-300 shadow-[0_0_15px_rgba(106,90,205,0.05)] focus:shadow-[0_0_20px_rgba(106,90,205,0.15)]"
               />
               <button
                 type="button"
@@ -112,7 +111,7 @@ export default function LandingPage({ onAccessVault, initialError }) {
               <button
                 type="submit"
                 disabled={loading}
-                className="absolute right-2 top-2 p-1.5 bg-amber-600 hover:bg-amber-500 text-black font-semibold rounded-md disabled:opacity-50 transition-colors"
+                className="absolute right-2 top-2 p-1.5 bg-violet-600/80 hover:bg-violet-500 text-white rounded-md disabled:opacity-50 transition-colors"
                 aria-label="Access Vault"
               >
                 {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <ArrowRight className="h-5 w-5" />}
@@ -126,8 +125,8 @@ export default function LandingPage({ onAccessVault, initialError }) {
             )}
 
             {/* Warning block */}
-            <div className="bg-[#09090c] border border-slate-900 rounded-lg p-4 text-xs text-slate-400 font-mono space-y-2 leading-relaxed">
-              <div className="flex items-center gap-2 text-amber-400 font-semibold mb-1">
+            <div className="bg-slate-950/75 backdrop-blur-sm border border-slate-900 rounded-lg p-4 text-xs text-slate-400 font-mono space-y-2 leading-relaxed">
+              <div className="flex items-center gap-2 text-violet-300 font-semibold mb-1">
                 <Info className="h-4 w-4 shrink-0" />
                 <span>Ephemerality Rules</span>
               </div>
@@ -141,8 +140,8 @@ export default function LandingPage({ onAccessVault, initialError }) {
 
       {/* Waking up badge */}
       {serverStatus === 'waking_up' && (
-        <div className="absolute bottom-4 left-4 right-4 md:left-auto md:right-4 z-20 flex items-center justify-center gap-2 font-mono text-xs text-amber-400 bg-[#09090c] border border-amber-950/40 rounded-full px-4 py-2 shadow-lg">
-          <Loader2 className="h-3 w-3 animate-spin text-amber-500" />
+        <div className="absolute bottom-4 left-4 right-4 md:left-auto md:right-4 z-20 flex items-center justify-center gap-2 font-mono text-xs text-violet-300 bg-slate-950/80 border border-violet-900/40 rounded-full px-4 py-2 shadow-lg">
+          <Loader2 className="h-3 w-3 animate-spin text-violet-500" />
           <span>Waking up vault server (Render cold-start delay)...</span>
         </div>
       )}
