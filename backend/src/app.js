@@ -30,6 +30,18 @@ app.get('/api/status', (req, res) => {
   res.json({ status: 'ready', timestamp: new Date() });
 });
 
+// Diagnostic endpoint — reveals env var presence (never values)
+app.get('/api/debug', (req, res) => {
+  res.json({
+    DATABASE_URL: process.env.DATABASE_URL ? 'SET' : 'MISSING',
+    BCRYPT_SALT: process.env.BCRYPT_SALT ? 'SET' : 'MISSING',
+    CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME ? 'SET' : 'MISSING',
+    CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY ? 'SET' : 'MISSING',
+    CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET ? 'SET' : 'MISSING',
+    NODE_ENV: process.env.NODE_ENV || 'not set',
+  });
+});
+
 // Vault Routes & Cleanup endpoints
 app.use('/', vaultRouter);
 
@@ -41,7 +53,7 @@ app.use((req, res) => {
 // Global Error Handler
 app.use((err, req, res, next) => {
   console.error('Unhandled server error:', err);
-  res.status(500).json({ error: 'Internal server error.' });
+  res.status(500).json({ error: err.message || err.toString() || 'Internal server error.' });
 });
 
 export default app;
