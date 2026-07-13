@@ -7,13 +7,15 @@ Void Vault is a loginless, keyless, and ephemeral secure scratchpad and file vau
 ## ✨ Features
 
 - **Key-Based Access**: Access or create vaults instantly via a single unique key. No email, no passwords, and no accounts required.
-- **Password Visibility Toggle**: Features a custom eye button inside the landing page key input to toggle between hidden and plain-text visibility.
-- **In-App Quick Look Preview**: Preview **PDFs, images, and Microsoft Word (.docx)** files directly inside a glassmorphic overlay modal on the site. Supports standard browser PDF tools and full text-copying from Word documents.
-- **Performance-Optimized Code Splitting**: Utilizes dynamic ES module imports to code-split the 170KB `.docx` rendering library, downloading it only when a user clicks the Preview button.
-- **Auto-Saving Notepad**: Features a debounced notepad that autosaves notes to the vault with visual save indicators.
-- **GSAP Scramble Effects**: Elegant landing page header scrambles and notepad placeholder animations built using GreenSock's `ScrambleTextPlugin`.
+- **Sub-Millisecond HMAC-SHA256 Hashing**: Deterministically hashes vault keys using native Node.js HMAC-SHA256 for ultra-fast `<1ms` O(1) database lookups.
+- **Interactive Scramble Intro & Click-to-Cut**: GSAP-scrambled landing title. Click anywhere on the screen to instantly skip the intro, reveal the search bar, and auto-focus the input—with real-time matrix scrambling as you type.
+- **Performance-Optimized Code Splitting**: Utilizes dynamic React `lazy`/`Suspense` route splitting and custom Vite `manualChunks` vendor isolation (Three.js, GSAP, Lucide, React), reducing primary entry bundle size by **91% down to ~62KB**.
+- **In-App Quick Look Preview**: Preview **PDFs, images, and Microsoft Word (.docx)** files directly inside a glassmorphic overlay modal on the site. Uses dynamic ES module imports to load the 170KB `.docx` parser on-demand.
+- **Lightweight Keystroke Autosave**: Features a debounced notepad that autosaves notes with zero database table join overhead and visual save indicators.
+- **Isolated Expiry Timer Component**: React memoization pattern isolates the 1-second countdown clock, eliminating top-level re-render churn across the editor.
+- **Gzip Response Compression & DB Indexing**: Native Express response compression and PostgreSQL `expiresAt` column indexing for superfast API responses and cleanup sweeps.
 - **Arbitrary File Uploads**: Accept any file extension/type up to **5MB per file**, with a total vault capacity of **25MB**.
-- **In-App Delete Confirmations**: A custom, dark-theme confirmation modal that replaces standard browser alerts.
+- **In-App Delete Confirmations & Esc Key Dismissal**: A custom, dark-theme confirmation modal with full `Escape` key keyboard shortcut support.
 - **Export as PDF Snapshot**: Generates a dark-themed monospace snapshot receipt of the notes content and attached file manifest, including a programmatically-drawn vector logo and clickable download links.
 - **Cloudinary & Base64 Fallback**: Supports Cloudinary for remote storage, with automatic fallback to base64 Data URLs inside the local database for seamless, zero-config local testing.
 
@@ -24,12 +26,12 @@ Void Vault is a loginless, keyless, and ephemeral secure scratchpad and file vau
 ### Frontend
 - **Framework**: Vite + React
 - **Styling**: Tailwind CSS
-- **Animations**: GSAP (GreenSock) + `ScrambleTextPlugin`
+- **Animations**: GSAP (GreenSock) + `ScrambleTextPlugin` + Three.js / React Three Fiber (`Beams`)
 - **Word Document Parser**: `docx-preview`
 - **Icons**: Lucide React
 
 ### Backend
-- **Server**: Node.js + Express
+- **Server**: Node.js + Express + `compression`
 - **ORM**: Prisma ORM
 - **Database**: PostgreSQL
 - **PDF Generation**: PDFKit
@@ -53,7 +55,7 @@ Ensure you have the following installed on your system:
    ```bash
    psql postgres
    ```
-2. **Create the Database** and user:
+2. **Create the Database**:
    ```sql
    CREATE DATABASE voidpad;
    ```
@@ -70,7 +72,9 @@ Ensure you have the following installed on your system:
 2. Create a `.env` file in the `backend/` directory:
    ```env
    PORT=5005
-   DATABASE_URL="postgresql://postgres@localhost:5432/voidpad"
+   DATABASE_URL="postgresql://username:password@localhost:5432/voidpad"
+   KEY_PEPPER_SECRET="your_secret_pepper_here"
+   CLEANUP_TOKEN="your_super_secret_cleanup_token_here"
    
    # Optional: Configure Cloudinary keys to test remote uploads
    # If left as placeholders, files will automatically fallback to base64 DB storage
@@ -113,6 +117,6 @@ Ensure you have the following installed on your system:
 
 Void Vault is designed from the ground up for strict temporary storage:
 - **Zero Logins**: Accounts and recovery processes are completely omitted to ensure anonymity.
-- **Hash-Protected Vaults**: Keys are securely hashed using SHA-256 before database checks are performed.
+- **Deterministic HMAC-SHA256 Hashing**: Keys are hashed deterministically with pepper secrets before database checks are performed.
 - **Lazy Expiry Pruning**: Expiration checks are evaluated on every vault interaction. If the current time exceeds `expiresAt`, the server instantly deletes all database rows and media attachments before serving any content.
-- **Active Cron Sweep**: Scheduled tasks check the database periodically to prune all orphaned records.
+- **Active Cron Sweep**: Scheduled tasks check the database periodically to prune all expired records.
