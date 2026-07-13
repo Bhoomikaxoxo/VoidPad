@@ -17,6 +17,17 @@ function getInitialRoute() {
   return { page: 'landing' };
 }
 
+function formatErrorMessage(errData) {
+  if (!errData) return '';
+  if (typeof errData === 'string') return errData;
+  if (typeof errData === 'object') {
+    if (errData.message && typeof errData.message === 'string') return errData.message;
+    if (errData.error) return formatErrorMessage(errData.error);
+    return JSON.stringify(errData);
+  }
+  return String(errData);
+}
+
 class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
@@ -38,15 +49,15 @@ class ErrorBoundary extends Component {
           <div className="bg-red-950/30 border border-red-900/50 rounded-xl max-w-md w-full p-6 text-center shadow-2xl space-y-4">
             <AlertTriangle className="h-10 w-10 text-red-500 mx-auto" />
             <h2 className="text-sm font-bold text-red-400 tracking-wider uppercase">Vault Render Warning</h2>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              {this.state.error?.message || 'An unexpected error occurred while loading this vault.'}
+            <p className="text-xs text-slate-400 leading-relaxed font-mono">
+              {formatErrorMessage(this.state.error?.message || this.state.error || 'An unexpected error occurred while loading this vault.')}
             </p>
             <button
               onClick={() => {
                 window.history.pushState(null, '', '/');
                 window.location.reload();
               }}
-              className="px-4 py-2 bg-violet-600/80 hover:bg-violet-500 text-white text-xs font-semibold rounded transition-colors"
+              className="px-4 py-2 bg-violet-600/80 hover:bg-violet-500 text-white text-xs font-semibold rounded transition-colors font-mono"
             >
               Return to Home Page
             </button>
@@ -89,8 +100,8 @@ export default function App() {
           // Redirect back to landing on failure
           window.history.pushState(null, '', '/');
           setRoute({ page: 'landing' });
-          if (err.response && err.response.data && err.response.data.error) {
-            setError(err.response.data.error);
+          if (err.response && err.response.data) {
+            setError(formatErrorMessage(err.response.data.error || err.response.data));
           } else {
             setError('Failed to load shared vault. Server may still be waking up.');
           }

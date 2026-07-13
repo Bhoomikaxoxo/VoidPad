@@ -7,11 +7,22 @@ import axios from 'axios';
 // Configurable API root
 const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000');
 
+function formatErrorMessage(errData) {
+  if (!errData) return '';
+  if (typeof errData === 'string') return errData;
+  if (typeof errData === 'object') {
+    if (errData.message && typeof errData.message === 'string') return errData.message;
+    if (errData.error) return formatErrorMessage(errData.error);
+    return JSON.stringify(errData);
+  }
+  return String(errData);
+}
+
 export default function LandingPage({ onAccessVault, initialError }) {
   const [showInput, setShowInput] = useState(false);
   const [key, setKey] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(initialError || '');
+  const [error, setError] = useState(formatErrorMessage(initialError));
   const [showPassword, setShowPassword] = useState(false);
   const skipRef = useRef(null); // holds the skip function exposed by ScrambleText
   const inputRef = useRef(null);
@@ -44,8 +55,8 @@ export default function LandingPage({ onAccessVault, initialError }) {
       onAccessVault(key, response.data);
     } catch (err) {
       console.error(err);
-      if (err.response && err.response.data && err.response.data.error) {
-        setError(err.response.data.error);
+      if (err.response && err.response.data) {
+        setError(formatErrorMessage(err.response.data.error || err.response.data));
       } else {
         setError('Unable to connect to backend server. Please verify your connection or ensure backend is running.');
       }
@@ -121,7 +132,7 @@ export default function LandingPage({ onAccessVault, initialError }) {
 
             {error && (
               <p className="text-red-400 text-xs font-mono text-center bg-red-950/30 border border-red-900/40 rounded px-2 py-1.5">
-                {error}
+                {formatErrorMessage(error)}
               </p>
             )}
 

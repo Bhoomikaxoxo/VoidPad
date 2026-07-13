@@ -12,6 +12,17 @@ gsap.registerPlugin(ScrambleTextPlugin);
 const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000');
 const TOTAL_STORAGE_CAP_BYTES = 25 * 1024 * 1024; // 25MB
 
+function formatErrorMessage(errData) {
+  if (!errData) return '';
+  if (typeof errData === 'string') return errData;
+  if (typeof errData === 'object') {
+    if (errData.message && typeof errData.message === 'string') return errData.message;
+    if (errData.error) return formatErrorMessage(errData.error);
+    return JSON.stringify(errData);
+  }
+  return String(errData);
+}
+
 export default function VaultPage({ vaultKey, initialVault, onExit }) {
   const vault = initialVault || {};
   const [content, setContent] = useState(vault.content || '');
@@ -177,6 +188,8 @@ export default function VaultPage({ vaultKey, initialVault, onExit }) {
     const formData = new FormData();
     formData.append('file', file);
 
+
+
     try {
       const response = await axios.post(`${API_URL}/api/vault/${vault.id}/files`, formData, {
         headers: {
@@ -186,8 +199,8 @@ export default function VaultPage({ vaultKey, initialVault, onExit }) {
       setFiles((prev) => [...prev, response.data]);
     } catch (err) {
       console.error(err);
-      if (err.response && err.response.data && err.response.data.error) {
-        setUploadError(err.response.data.error);
+      if (err.response && err.response.data) {
+        setUploadError(formatErrorMessage(err.response.data.error || err.response.data));
       } else {
         setUploadError('Failed to upload file.');
       }
