@@ -4,7 +4,7 @@ import VaultPage from './pages/VaultPage';
 import { Loader2 } from 'lucide-react';
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000');
 
 function getInitialRoute() {
   const path = window.location.pathname;
@@ -81,7 +81,7 @@ export default function App() {
       <div className="min-h-screen bg-black text-slate-100 flex flex-col items-center justify-center font-mono">
         <Loader2 className="h-10 w-10 animate-spin text-violet-500 mb-4" />
         <p className="text-sm text-slate-400">Accessing secure vault...</p>
-        <p className="text-[10px] text-slate-600 mt-2">Connecting to Void Pad backend (Render cold-start check)</p>
+        <p className="text-[10px] text-slate-600 mt-2">Connecting to Void Vault backend...</p>
       </div>
     );
   }

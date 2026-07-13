@@ -8,7 +8,7 @@ import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
 // Register the ScrambleTextPlugin with GSAP
 gsap.registerPlugin(ScrambleTextPlugin);
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000');
 const TOTAL_STORAGE_CAP_BYTES = 25 * 1024 * 1024; // 25MB
 
 export default function VaultPage({ vaultKey, initialVault, onExit }) {

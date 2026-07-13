@@ -5,7 +5,7 @@ import { ArrowRight, Loader2, Info, Eye, EyeOff } from 'lucide-react';
 import axios from 'axios';
 
 // Configurable API root
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000');
 
 export default function LandingPage({ onAccessVault, initialError }) {
   const [showInput, setShowInput] = useState(false);
