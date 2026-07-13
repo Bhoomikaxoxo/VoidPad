@@ -9,11 +9,13 @@ import { Clock } from 'lucide-react';
 const ExpiryTimer = memo(function ExpiryTimer({ expiresAt, onExit }) {
   const [timeLeft, setTimeLeft] = useState('');
 
-  const formattedExpiry = new Date(expiresAt).toLocaleTimeString([], {
-    hour: 'numeric',
-    minute: '2-digit',
-    second: '2-digit'
-  });
+  const formattedExpiry = expiresAt && !isNaN(new Date(expiresAt).getTime())
+    ? new Date(expiresAt).toLocaleTimeString([], {
+        hour: 'numeric',
+        minute: '2-digit',
+        second: '2-digit'
+      })
+    : '';
 
   useEffect(() => {
     const calculateTimeLeft = () => {

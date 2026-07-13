@@ -298,11 +298,7 @@ export default function VaultPage({ vaultKey, initialVault, onExit }) {
   const totalUsedBytes = files.reduce((sum, f) => sum + f.sizeBytes, 0);
   const usedPercentage = Math.min((totalUsedBytes / TOTAL_STORAGE_CAP_BYTES) * 100, 100);
 
-  const formattedExpiry = new Date(vault.expiresAt).toLocaleTimeString([], {
-    hour: 'numeric',
-    minute: '2-digit',
-    second: '2-digit'
-  });
+
 
   return (
     <div className="relative min-h-screen w-screen overflow-x-hidden bg-[#030305] text-slate-200 flex flex-col font-mono">
