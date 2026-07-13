@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
+import compression from 'compression';
 import vaultRouter from './routes/vault.js';
 import { apiLimiter } from './middleware/rateLimiter.js';
 
@@ -11,6 +12,7 @@ const app = express();
 app.set('trust proxy', 1);
 
 // Middleware
+app.use(compression());
 app.use(morgan('dev'));
 app.use(cors({
   origin: '*', // Allow all origins for keyless vault API access

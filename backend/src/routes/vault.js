@@ -153,7 +153,7 @@ router.put('/api/vault/:id/content', async (req, res) => {
 
     const vault = await prisma.vault.findUnique({
       where: { id },
-      include: { files: true }
+      select: { id: true, expiresAt: true }
     });
 
     if (!vault) {
@@ -167,7 +167,8 @@ router.put('/api/vault/:id/content', async (req, res) => {
 
     const updatedVault = await prisma.vault.update({
       where: { id },
-      data: { content: content || '' }
+      data: { content: content || '' },
+      select: { content: true }
     });
 
     return res.json({ success: true, content: updatedVault.content });

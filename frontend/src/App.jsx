@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import LandingPage from './pages/LandingPage';
-import VaultPage from './pages/VaultPage';
 import { Loader2 } from 'lucide-react';
 import axios from 'axios';
+
+const VaultPage = lazy(() => import('./pages/VaultPage'));
 
 const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000');
 
@@ -88,11 +89,18 @@ export default function App() {
 
   if (route.page === 'vault' && vaultData) {
     return (
-      <VaultPage
-        vaultKey={vaultKey}
-        initialVault={vaultData}
-        onExit={handleLeaveVault}
-      />
+      <Suspense fallback={
+        <div className="min-h-screen bg-black text-slate-100 flex flex-col items-center justify-center font-mono">
+          <Loader2 className="h-10 w-10 animate-spin text-violet-500 mb-4" />
+          <p className="text-sm text-slate-400">Initializing vault session...</p>
+        </div>
+      }>
+        <VaultPage
+          vaultKey={vaultKey}
+          initialVault={vaultData}
+          onExit={handleLeaveVault}
+        />
+      </Suspense>
     );
   }
 

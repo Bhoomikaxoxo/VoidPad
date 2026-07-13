@@ -24,9 +24,10 @@ export default function LandingPage({ onAccessVault, initialError }) {
     setTimeout(() => inputRef.current?.focus(), 100);
   }, []);
 
-  // Click anywhere to skip the scramble animation
+  // Click anywhere to skip scramble animation & cut straight to search input
   const handlePageClick = useCallback(() => {
     if (skipRef.current) skipRef.current();
+    inputRef.current?.focus();
   }, []);
 
   const handleSubmit = async (e) => {
@@ -81,7 +82,7 @@ export default function LandingPage({ onAccessVault, initialError }) {
 
         {/* Input Form Reveal */}
         <div
-          className={`flex flex-col items-center w-full max-w-md transition-all duration-1000 ${showInput ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4 pointer-events-none'
+          className={`flex flex-col items-center w-full max-w-md transition-all duration-300 ${showInput ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-2 pointer-events-none'
             }`}
         >
           <form onSubmit={handleSubmit} className="w-full space-y-4" onClick={(e) => e.stopPropagation()}>

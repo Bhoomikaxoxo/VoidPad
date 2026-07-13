@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { Download, Upload, Trash2, Clock, File, AlertTriangle, ArrowLeft, Copy, Check, Loader2, Eye, X } from 'lucide-react';
+import { Download, Upload, Trash2, File, AlertTriangle, ArrowLeft, Copy, Check, Loader2, Eye, X } from 'lucide-react';
 import axios from 'axios';
 import Beams from '../components/Beams';
+import ExpiryTimer from '../components/ExpiryTimer';
 import { gsap } from 'gsap';
 import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
 
@@ -15,7 +16,6 @@ export default function VaultPage({ vaultKey, initialVault, onExit }) {
   const vault = initialVault;
   const [content, setContent] = useState(initialVault.content || '');
   const [saveStatus, setSaveStatus] = useState('Saved to Void');
-  const [timeLeft, setTimeLeft] = useState('');
   const [files, setFiles] = useState(initialVault.files || []);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState('');
@@ -98,35 +98,17 @@ export default function VaultPage({ vaultKey, initialVault, onExit }) {
 
   const isFirstRender = useRef(true);
 
-  // 1. Expiration Timer countdown
+  // Keyboard shortcut listener (Esc to close active modals)
   useEffect(() => {
-    const calculateTimeLeft = () => {
-      const expires = new Date(vault.expiresAt).getTime();
-      const now = new Date().getTime();
-      const diff = expires - now;
-
-      if (diff <= 0) {
-        setTimeLeft('EXPIRED');
-        alert('This vault has expired and is being permanently deleted.');
-        onExit();
-        return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setPreviewFile(null);
+        setDeleteConfirmFile(null);
       }
-
-      const hours = Math.floor(diff / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-      const hStr = hours.toString().padStart(2, '0');
-      const mStr = minutes.toString().padStart(2, '0');
-      const sStr = seconds.toString().padStart(2, '0');
-
-      setTimeLeft(`${hStr}:${mStr}:${sStr}`);
     };
-
-    calculateTimeLeft();
-    const interval = setInterval(calculateTimeLeft, 1000);
-    return () => clearInterval(interval);
-  }, [vault.expiresAt, onExit]);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // 2. Debounced Autosave for Notepad
   useEffect(() => {
@@ -352,12 +334,7 @@ export default function VaultPage({ vaultKey, initialVault, onExit }) {
           <div className="h-4 w-px bg-slate-800"></div>
 
           {/* Expiration Countdown Info */}
-          <div className="flex items-center gap-2 text-xs text-violet-300 font-semibold select-none font-mono">
-            <Clock className="h-3.5 w-3.5 text-violet-400 animate-pulse" />
-            <span>
-              expires at {formattedExpiry} ({timeLeft || 'calculating...'})
-            </span>
-          </div>
+          <ExpiryTimer expiresAt={vault.expiresAt} onExit={onExit} />
         </div>
 
         <div className="flex items-center gap-2">
