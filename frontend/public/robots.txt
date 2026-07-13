@@ -3,4 +3,4 @@ User-agent: *
 Allow: /
 Disallow: /v/
 
-Sitemap: https://voidvault.vercel.app/sitemap.xml
+Sitemap: https://voidvault-gamma.vercel.app/sitemap.xml
